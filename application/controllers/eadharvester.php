@@ -20,6 +20,7 @@ class eadharvester extends CI_Controller
         $repository = $_POST['repository'];
         $branch = $_POST['branch'];
         $agencyCode = $_POST['agencyCode'];
+        //remove white from agencydoe
         $agencyCode= trim($agencyCode);
         $repoName = $_POST['repoName'];
         $file_List = json_decode($_POST['fileList'], true);
@@ -187,6 +188,9 @@ class eadharvester extends CI_Controller
             echo 0;
         }
     }
+
+
+
 
     public function getValidationResults()
     {
