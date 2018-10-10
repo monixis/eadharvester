@@ -150,18 +150,43 @@ class eadharvester extends CI_Controller
                     $rules_failed_to_string = implode(",", $rules_failed);
                 } else {
                     $rules_failed_to_string = " ";
-
                     // EAD manipulation
                     $xml->eadheader->eadid['mainagencycode'] = $agencyCode;
                     $xml->archdesc->did->repository->corpname = $repoName;
+                    //adding attributes to the ead tag
+                    $xml->addAttribute('xmlns', 'urn:isbn:1-931666-22-9');
+                    $xml->addAttribute('xmlns:xsi', 'xsi="http://www.w3.org/2001/XMLSchema-instance');
+                    $xml->addAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                    $xml->addAttribute('xsi:schemaLocation', 'urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd');
+                    //remove white space in value of eadid
+                    $eadid=$xml->eadheader->eadid;
+                    $eadid=trim($eadid);
+                    $xml->eadheader->eadid = $eadid;
+                    foreach ($xml->archdesc->dsc->children() as $c) {
+                        $uniqid= uniqid();
+                        $uniqid="c_".$uniqid;
+                        $c->addAttribute('id', $uniqid);
+                    }
 
                     // Download the validated EAD file on the server
                     $fname = basename($path_to_file);
                     $dom = new DOMDocument;
                     $dom->preserveWhiteSpace = false;
+                    $dom->formatOutput = true;
+
                     //$dom->loadXML($xmlContents);
                     $dom->loadXML($xml->asXML());
-                    $dom->save('./validatedFiles/'. $fname);
+
+
+
+
+                    //see if directory exists and create when missing
+                    if (!is_dir('validatedFiles/'.$agencyCode)) {
+                        mkdir('validatedFiles/'.$agencyCode, 0700);
+                    }
+
+                    //save the xml file
+                    $dom->save('./validatedFiles/'.$agencyCode.'/'. $fname);
                 }
 
                 $data = array(
