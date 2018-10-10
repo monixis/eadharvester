@@ -20,6 +20,7 @@ class eadharvester extends CI_Controller
         $repository = $_POST['repository'];
         $branch = $_POST['branch'];
         $agencyCode = $_POST['agencyCode'];
+        $agencyCode= trim($agencyCode);
         $repoName = $_POST['repoName'];
         $file_List = json_decode($_POST['fileList'], true);
         $data["file_list"] = $file_List;
