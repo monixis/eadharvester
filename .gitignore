@@ -1,0 +1,4 @@
+/validatedFiles/*
+/application/logs/*
+/application/db/*.s3db
+/application/config/config.php
