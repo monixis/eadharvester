@@ -36,7 +36,6 @@ class eadharvester extends CI_Controller
                 $path_to_file = "https://raw.githubusercontent.com/" . $userid . "/" . $repository . "/" . $branch . "/" . $filename;
                 $xml = simplexml_load_file($path_to_file);
 
-                $xmlContents = file_get_contents($path_to_file);
 
                 /* Rule #: Collection Title Validation */
 
@@ -162,11 +161,6 @@ class eadharvester extends CI_Controller
                     $eadid=$xml->eadheader->eadid;
                     $eadid=trim($eadid);
                     $xml->eadheader->eadid = $eadid;
-                    foreach ($xml->archdesc->dsc->children() as $c) {
-                        $uniqid= uniqid();
-                        $uniqid="c_".$uniqid;
-                        $c->addAttribute('id', $uniqid);
-                    }
 
                     // Download the validated EAD file on the server
                     $fname = basename($path_to_file);
@@ -174,11 +168,7 @@ class eadharvester extends CI_Controller
                     $dom->preserveWhiteSpace = false;
                     $dom->formatOutput = true;
 
-                    //$dom->loadXML($xmlContents);
                     $dom->loadXML($xml->asXML());
-
-
-
 
                     //see if directory exists and create when missing
                     if (!is_dir('validatedFiles/'.$agencyCode)) {
@@ -187,6 +177,40 @@ class eadharvester extends CI_Controller
 
                     //save the xml file
                     $dom->save('./validatedFiles/'.$agencyCode.'/'. $fname);
+
+                    //doing a simple replace for a few tags in the xml file
+                    $str=file_get_contents('./validatedFiles/'.$agencyCode.'/'. $fname);
+                    $str=str_replace("<c01", "<c", $str);
+                    $str=str_replace("</c01", "</c", $str);
+                    $str=str_replace("<c02", "<c", $str);
+                    $str=str_replace("</c02", "</c", $str);
+                    $str=str_replace("<c03", "<c", $str);
+                    $str=str_replace("</c03", "</c", $str);
+                    $str=str_replace("<c04", "<c", $str);
+                    $str=str_replace("</c04", "</c", $str);
+                    $str=str_replace("<c05", "<c", $str);
+                    $str=str_replace("</c05", "</c", $str);
+                    $str=str_replace("<c06", "<c", $str);
+                    $str=str_replace("</c06", "</c", $str);
+                    file_put_contents('./validatedFiles/'.$agencyCode.'/'. $fname, $str);
+
+                    //This will set a serial for each node for the componets fields
+                    $xml2 = simplexml_load_file('./validatedFiles/'.$agencyCode.'/'. $fname);
+                    $dom2 = new DOMDocument;
+                    $dom2->preserveWhiteSpace = false;
+                    $dom2->formatOutput = true;
+
+                    $dom2->loadXML($xml2->asXML());
+                    foreach ($dom2->getElementsByTagName('c') as $ctag) {
+                              $uniqid= uniqid();
+                          $uniqid="c_".$uniqid;
+                            $ctag->setAttribute('id', $uniqid);
+                    }
+                    $dom2->save('./validatedFiles/'.$agencyCode.'/'. $fname);
+
+
+
+                    //    $doc->saveXML('./validatedFiles/'.$agencyCode.'/'. $fname);
                 }
 
                 $data = array(
@@ -213,7 +237,6 @@ class eadharvester extends CI_Controller
             echo 0;
         }
     }
-
 
 
 
