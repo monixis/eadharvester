@@ -1,7 +1,4 @@
 /validatedFiles/*
 /application/logs/*
-# SQLite
-*.db
-*.s3db
-*.sqlite3
+/application/db/*
 /application/config/config.php
