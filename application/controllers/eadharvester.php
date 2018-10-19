@@ -163,6 +163,8 @@ class eadharvester extends CI_Controller
                     //remove white space in value of eadid
                     $eadid=$xml->eadheader->eadid;
                     $eadid=trim($eadid);
+                    //remove extenion if one is attached to the $eadid
+                    $eadid = preg_replace('/\\.[^.\\s]{3,4}$/', '', $eadid);
                     $xml->eadheader->eadid = $eadid;
 
                     // Download the validated EAD file on the server
