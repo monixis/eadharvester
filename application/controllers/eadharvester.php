@@ -152,11 +152,14 @@ class eadharvester extends CI_Controller
                     // EAD manipulation
                     $xml->eadheader->eadid['mainagencycode'] = $agencyCode;
                     $xml->archdesc->did->repository->corpname = $repoName;
-                    //adding attributes to the ead tag
+                    $eadattrs = $xml->attributes();
+                    //adding attributes to the ead tag if they are not set
+                    if (!isset($eadattrs)) {
                     $xml->addAttribute('xmlns', 'urn:isbn:1-931666-22-9');
                     $xml->addAttribute('xmlns:xsi', 'xsi="http://www.w3.org/2001/XMLSchema-instance');
                     $xml->addAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
                     $xml->addAttribute('xsi:schemaLocation', 'urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd');
+                  }
                     //remove white space in value of eadid
                     $eadid=$xml->eadheader->eadid;
                     $eadid=trim($eadid);
