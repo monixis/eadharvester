@@ -197,6 +197,14 @@ class eadharvester extends CI_Controller
                     $str=str_replace("</c05", "</c", $str);
                     $str=str_replace("<c06", "<c", $str);
                     $str=str_replace("</c06", "</c", $str);
+                    $str=str_replace("<c07", "<c", $str);
+                    $str=str_replace("</c07", "</c", $str);
+                    $str=str_replace("<c08", "<c", $str);
+                    $str=str_replace("</c08", "</c", $str);
+                    $str=str_replace("<c09", "<c", $str);
+                    $str=str_replace("</c09", "</c", $str);
+                    $str=str_replace("<c10", "<c", $str);
+                    $str=str_replace("</c10", "</c", $str);
                     file_put_contents('./validatedFiles/'.$agencyCode.'/'. $fname, $str);
 
                     //This will set a serial for each node for the componets fields
