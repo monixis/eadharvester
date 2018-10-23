@@ -20,6 +20,10 @@ class eadharvester extends CI_Controller
         $repository = $_POST['repository'];
         $branch = $_POST['branch'];
         $agencyCode = $_POST['agencyCode'];
+        $addressline1 = $_POST['addressline1'];
+        $addressline2 = $_POST['addressline2'];
+        $addressline3 = $_POST['addressline3'];
+        $addresslineArray=array($addressline1 , $addressline2 , $addressline3);
         //remove white from agencydoe
         $agencyCode= trim($agencyCode);
         $repoName = $_POST['repoName'];
@@ -152,39 +156,51 @@ class eadharvester extends CI_Controller
                     // EAD manipulation
                     $xml->eadheader->eadid['mainagencycode'] = $agencyCode;
                     $xml->archdesc->did->repository->corpname = $repoName;
+
                     $eadattrs = $xml->attributes();
                     //adding attributes to the ead tag if they are not set
                     if (!isset($eadattrs)) {
-                    $xml->addAttribute('xmlns', 'urn:isbn:1-931666-22-9');
-                    $xml->addAttribute('xmlns:xsi', 'xsi="http://www.w3.org/2001/XMLSchema-instance');
-                    $xml->addAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-                    $xml->addAttribute('xsi:schemaLocation', 'urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd');
-                  }
+                        $xml->addAttribute('xmlns', 'urn:isbn:1-931666-22-9');
+                        $xml->addAttribute('xmlns:xsi', 'xsi="http://www.w3.org/2001/XMLSchema-instance');
+                        $xml->addAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                        $xml->addAttribute('xsi:schemaLocation', 'urn:isbn:1-931666-22-9 http://www.loc.gov/ead/ead.xsd');
+                    }
                     //remove white space in value of eadid
                     $eadid=$xml->eadheader->eadid;
                     $eadid=trim($eadid);
                     //remove extenion if one is attached to the $eadid
                     $eadid = preg_replace('/\\.[^.\\s]{3,4}$/', '', $eadid);
                     $xml->eadheader->eadid = $eadid;
-
                     // Download the validated EAD file on the server
                     $fname = basename($path_to_file);
                     $dom = new DOMDocument;
                     $dom->preserveWhiteSpace = false;
                     $dom->formatOutput = true;
-
                     $dom->loadXML($xml->asXML());
-
+                    //remove old address
+                    $list = $dom->getElementsByTagName("addressline");
+                    while ($list->length > 0) {
+                        $a = $list->item(0);
+                        $a->parentNode->removeChild($a);
+                    }
+                    //Write new address for repo
+                    $all_h3s = $dom->getElementsByTagName('address'); // get all h3 tags from the document
+                    foreach ($all_h3s as $h3) {
+                        $order = $dom->createElement('addressline', $addressline1);
+                        $h3->appendChild($order);
+                        $order = $dom->createElement('addressline', $addressline2);
+                        $h3->appendChild($order);
+                        $order = $dom->createElement('addressline', $addressline3);
+                        $h3->appendChild($order);
+                    }
                     //see if directory exists and create when missing
                     if (!is_dir('validatedFiles/'.$agencyCode)) {
                         mkdir('validatedFiles/'.$agencyCode, 0700);
                     }
-
                     //save the xml file
                     $dom->save('./validatedFiles/'.$agencyCode.'/'. $fname);
-
                     //doing a simple replace for a few tags in the xml file
-                    $str=file_get_contents('./validatedFiles/'.$agencyCode.'/'. $fname);
+                    $str=file_get_contents('./validatedFiles/'.$agencyCode.'/'. $fname, LIBXML_NOEMPTYTAG);
                     $str=str_replace("<c01", "<c", $str);
                     $str=str_replace("</c01", "</c", $str);
                     $str=str_replace("<c02", "<c", $str);
