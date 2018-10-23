@@ -184,15 +184,29 @@ class eadharvester extends CI_Controller
                         $a = $list->item(0);
                         $a->parentNode->removeChild($a);
                     }
+                    //Find address and add it if missing
+                    $listaddr = $dom->getElementsByTagName("address");
+                    if ($listaddr->length<1) {
+                        $all_repo = $dom->getElementsByTagName("repository");
+                        foreach ($all_repo as $repos) {
+                            $o = $dom->createElement('address');
+                            $repos->appendChild($o);
+                        }
+                        $all_pubst = $dom->getElementsByTagName("publicationstmt");
+                        foreach ($all_pubst as $pubst) {
+                            $o = $dom->createElement('address');
+                            $pubst->appendChild($o);
+                        }
+                    }
                     //Write new address for repo
                     $all_address = $dom->getElementsByTagName('address'); // get all address tags from the document
                     foreach ($all_address as $address) {
-                        $order = $dom->createElement('addressline', $addressline1);
-                        $address->appendChild($order);
-                        $order = $dom->createElement('addressline', $addressline2);
-                        $address->appendChild($order);
-                        $order = $dom->createElement('addressline', $addressline3);
-                        $address->appendChild($order);
+                        $b = $dom->createElement('addressline', $addressline1);
+                        $address->appendChild($b);
+                        $b = $dom->createElement('addressline', $addressline2);
+                        $address->appendChild($b);
+                        $b = $dom->createElement('addressline', $addressline3);
+                        $address->appendChild($b);
                     }
                     //see if directory exists and create when missing
                     if (!is_dir('validatedFiles/'.$agencyCode)) {
