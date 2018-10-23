@@ -74,7 +74,7 @@ tr#red{
 
 
     </style>
-  
+
     <?php
 ?>
 </head>
@@ -106,7 +106,7 @@ tr#red{
 
 <div class = "container">
         <div class="col-sm-2 sidenav">
-            <a href='<?php echo base_url( ); ?>'><img src='https://www.empireadc.org/sites/www.empireadc.org/files/ead_logo.gif' style='width:220px; margin-top: -75px'/></a>
+            <a href='<?php echo base_url(); ?>'><img src='https://www.empireadc.org/sites/www.empireadc.org/files/ead_logo.gif' style='width:220px; margin-top: -75px'/></a>
             <!--p><a href="#">Link</a></p>
             <p><a href="#">Link</a></p>
             <p><a href="#">Link</a></p-->
@@ -162,13 +162,32 @@ tr#red{
                             <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
                                 <input type="text" class="form-control" name="repository" id="repository" placeholder="Add Repository Name">
                             </div>
-                        </div> 
+                        </div>
                         <div class="form-group">
                             <label>Agency Code</label>
                             <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-barcode"></span></span>
                                 <input type="text" class="form-control" name="agencyCode" id="agencyCode" placeholder="Agency Code for the collection">
                             </div>
-                        </div>    
+                        </div>
+                        <div class="form-group">
+                            <label>Address Line  1</label>
+                            <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                                <input type="text" class="form-control" name="addressline1" id="addressline1" placeholder="Street Address Line">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Address Line 2</label>
+                            <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                                <input type="text" class="form-control" name="addressline2" id="addressline2" placeholder="Second Address Line">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Address Line 3</label>
+                            <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                                <input type="text" class="form-control" name="addressline3" id="addressline3" placeholder="City, State, Zip">
+                            </div>
+                        </div>
+
                         <!--div class="form-group">
                             <label>Select Directory</label>
                             <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-indent-left"></span></span>
@@ -182,7 +201,7 @@ tr#red{
                 </div>
                   </div>
                   </br><a href='https://docs.google.com/document/d/1DnOmxlH6jwH_3dNswq_Vcc3W9pdHMjZeID_DfJxHS9Y/edit?usp=sharing' target="_blank" ><button class="btn btn-primary" style="margin-bottom: 20px">VIEW VALIDATION RULES</button></a></br>
-  
+
 
         <!--h4 data-toggle="collapse" data-target="#eadList" class='infoAccordion accordion'>List of Files<span class="glyphicon glyphicon-menu-right" style="float:right;"></span></h4>
 
@@ -195,7 +214,7 @@ tr#red{
                         List of Files
                     </a>
                 </h4>
-               
+
             </div>
             <button class="btn btn-primary center-block" type="button" id="validate">Validate</button>
             <div id="fileSection" class="panel-collapse collapse in">
@@ -212,7 +231,7 @@ tr#red{
                     <tbody>
                     </tbody>
                 </table>
-              
+
             </div>
 
 
@@ -227,7 +246,7 @@ tr#red{
                     </a>
                 </h4>
                 <button class="btn btn-primary" onclick="javascript:createPdf();" type="button" id="print">Print Pdf</button>
-               
+
             </div>
             <div id="resultSection" class="panel-collapse collapse in">
                 <div id="resultBody" class="panel-body">
@@ -244,7 +263,7 @@ tr#red{
                         <tbody>
                         </tbody>
                     </table>
-                   
+
                     <h6></h6>
                 </div>
 
@@ -421,14 +440,17 @@ tr#red{
 
             $('button#validate').click(function () {
                 if ($('#repository').val() != ''){
-                  
+
                     if($('#agencyCode').val() != ''){
-    
+
                         var gitUser = document.getElementById("username").value;
                         var repoSel = $("#reposel").val();
                         var brSel = $("#brsel").val();
                         var acode = $("#agencyCode").val();
                         var repoName = $("#repository").val();
+                        var addressline1 = $("#addressline1").val();
+                        var addressline2 = $("#addressline2").val();
+                        var addressline3 = $("#addressline3").val();
                         //var dirSel = $("#dirsel").val();
                         $("#resultTable tbody").empty();
                         var fileList = [];
@@ -442,19 +464,22 @@ tr#red{
                         if (fileList.length == 0) {
 
                             alert("Please select atleast one EAD file from the selected directory/Make sure that the selected directory has EAD files");
-                
+
                         } else {
-                            
+
                             //loading spinner gif
                             $("body").addClass("loading");
                             var result = "";
-                            
+
                             $.post("<?php echo base_url("?c=eadharvester&m=validate");?>", {
                                 //  institute: instName,
                                 gituserId: gitUser,
                                 repository: repoSel,
                                 branch: brSel,
                                 agencyCode: acode,
+                                addressline1: addressline1,
+                                addressline2: addressline2,
+                                addressline3: addressline3,
                                 repoName: repoName,
                                 //directory: dirSel,
                                 fileList: JSON.stringify(fileList)
@@ -463,27 +488,27 @@ tr#red{
 
                                 document.getElementById("resultPanel").style.visibility = "visible";
                                 document.getElementById("resultTable").style.visibility = "visible";
-                                
+
                                 if(response !=""){
                                     var result = JSON.parse(response);
                                     $('#filePanel').hide();
-                                    
+
                                     for(var i=0; i< result.length;i++){
-                                        // Change row background to red if rules failed.                                         
+                                        // Change row background to red if rules failed.
                                         var color = 'white';
                                         if(result[i].rules_failed != ' '){
                                             color = 'red';
                                         }
 
                                         var link = "https://raw.githubusercontent.com/" + gitUser + "/" + repoSel + "/" + brSel + "/" + "/" + result[i].file_name;
-                                                              
+
                                         $('#resultTable').append('<tr id="'+ color +'"><td>' + (i+1) + '</td>' +
-                                            '<td><a href="' + link + '" target="_blank">' + result[i].file_name + '</a></td>' + 
+                                            '<td><a href="' + link + '" target="_blank">' + result[i].file_name + '</a></td>' +
                                             '<td>'+result[i].rules_valid+'</td>'+
                                             '<td>'+ result[i].rules_failed+'</td></tr>');
                                     }
                                 }else {
-                                      alert('Technical issue with the results. Please refresh and try again or contact Administrator!')  
+                                      alert('Technical issue with the results. Please refresh and try again or contact Administrator!')
                                  }
                             });
                         }
@@ -491,14 +516,14 @@ tr#red{
                     }else{
                         alert('Missing Agency Code');
                     }
-              
+
                 }else{
                     alert('Missing Repository Name');
                 }
-              
+
             });
         });
-           
+
         function createPdf() {
             var pdf = new jsPDF('p', 'pt', 'letter');
 
@@ -533,11 +558,11 @@ tr#red{
 
        $("button#download").click(function(){
             $.post("<?php echo base_url("?c=eadharvester&m=downloadFiles");?>", {
-                   
+
             }).done(function (response) {
                 alert('Done');
             });
-       }); 
+       });
 
       $("#select_all").change(function() {
             if(this.checked) {
@@ -552,11 +577,3 @@ tr#red{
 </body>
 
 </html>
-
-
-
-
-
-
-
-
