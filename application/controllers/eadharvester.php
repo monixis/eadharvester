@@ -156,6 +156,7 @@ class eadharvester extends CI_Controller
                     // EAD manipulation
                     $xml->eadheader->eadid['mainagencycode'] = $agencyCode;
                     $xml->archdesc->did->repository->corpname = $repoName;
+                    $xml->eadheader->filedesc->publicationstmt->publisher = $repoName;
 
                     $eadattrs = $xml->attributes();
                     //adding attributes to the ead tag if they are not set
