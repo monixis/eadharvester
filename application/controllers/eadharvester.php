@@ -185,14 +185,14 @@ class eadharvester extends CI_Controller
                         $a->parentNode->removeChild($a);
                     }
                     //Write new address for repo
-                    $all_h3s = $dom->getElementsByTagName('address'); // get all h3 tags from the document
-                    foreach ($all_h3s as $h3) {
+                    $all_address = $dom->getElementsByTagName('address'); // get all address tags from the document
+                    foreach ($all_address as $address) {
                         $order = $dom->createElement('addressline', $addressline1);
-                        $h3->appendChild($order);
+                        $address->appendChild($order);
                         $order = $dom->createElement('addressline', $addressline2);
-                        $h3->appendChild($order);
+                        $address->appendChild($order);
                         $order = $dom->createElement('addressline', $addressline3);
-                        $h3->appendChild($order);
+                        $address->appendChild($order);
                     }
                     //see if directory exists and create when missing
                     if (!is_dir('validatedFiles/'.$agencyCode)) {
