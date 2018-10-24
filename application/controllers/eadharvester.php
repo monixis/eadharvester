@@ -222,9 +222,9 @@ class eadharvester extends CI_Controller
                         mkdir('validatedFiles/'.$agencyCode, 0700);
                     }
                     //save the xml file
-                    $dom->save('./validatedFiles/'.$agencyCode.'/'. $fname);
+                    $dom->save('./validatedFiles/'.$agencyCode.'/'. $eadid .'.xml');
                     //doing a simple replace for a few tags in the xml file
-                    $str=file_get_contents('./validatedFiles/'.$agencyCode.'/'. $fname, LIBXML_NOEMPTYTAG);
+                    $str=file_get_contents('./validatedFiles/'.$agencyCode.'/'. $eadid .'.xml', LIBXML_NOEMPTYTAG);
                     $str=str_replace("<c01", "<c", $str);
                     $str=str_replace("</c01", "</c", $str);
                     $str=str_replace("<c02", "<c", $str);
