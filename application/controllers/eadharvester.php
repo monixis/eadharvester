@@ -191,13 +191,16 @@ class eadharvester extends CI_Controller
                         $a->parentNode->removeChild($a);
                     }
                     //Find address and add it if missing
-                    $listaddr = $dom->getElementsByTagName("address");
-                    if ($listaddr->length<1) {
+                    //  $listaddr = $dom->getElementsByTagName("address");
+                    //if ($listaddr->length<2) {
+                    if (!isset($xml->archdesc->did->repository->address)) {
                         $all_repo = $dom->getElementsByTagName("repository");
                         foreach ($all_repo as $repos) {
                             $o = $dom->createElement('address');
                             $repos->appendChild($o);
                         }
+                    }
+                    if (!isset($xml->eadheader->filedesc->publicationstmt->address)) {
                         $all_pubst = $dom->getElementsByTagName("publicationstmt");
                         foreach ($all_pubst as $pubst) {
                             $o = $dom->createElement('address');
