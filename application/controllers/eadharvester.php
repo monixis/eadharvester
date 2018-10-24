@@ -168,10 +168,16 @@ class eadharvester extends CI_Controller
                     }
                     //remove white space in value of eadid
                     $eadid=$xml->eadheader->eadid;
+                    if (strlen($eadid)<1){
+                      $eadid=$filename;
+                    }
                     $eadid=trim($eadid);
-                    //remove extenion if one is attached to the $eadid
-                    $eadid = preg_replace('/\\.[^.\\s]{3,4}$/', '', $eadid);
+                    //remove xml extenion if one is attached to the $eadid
+                    $eadid = rtrim($eadid, '.xml');
+                    //if they use a period in the id change it to underscore
+                    $eadid = preg_replace("/[\.]/", "_", $eadid);
                     $xml->eadheader->eadid = $eadid;
+
                     // Download the validated EAD file on the server
                     $fname = basename($path_to_file);
                     $dom = new DOMDocument;
