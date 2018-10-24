@@ -237,42 +237,38 @@ class eadharvester extends CI_Controller
                     $str=str_replace("</c05", "</c", $str);
                     $str=str_replace("<c06", "<c", $str);
                     $str=str_replace("</c06", "</c", $str);
-                    $str=str_replace("<c07", "<c", $str);
-                    $str=str_replace("</c07", "</c", $str);
-                    $str=str_replace("<c08", "<c", $str);
-                    $str=str_replace("</c08", "</c", $str);
-                    $str=str_replace("<c09", "<c", $str);
-                    $str=str_replace("</c09", "</c", $str);
-                    $str=str_replace("<c10", "<c", $str);
-                    $str=str_replace("</c10", "</c", $str);
-                    file_put_contents('./validatedFiles/'.$agencyCode.'/'. $fname, $str);
+                    /*      $str=str_replace("<c07", "<c", $str);
+                          $str=str_replace("</c07", "</c", $str);
+                          $str=str_replace("<c08", "<c", $str);
+                          $str=str_replace("</c08", "</c", $str);
+                          $str=str_replace("<c09", "<c", $str);
+                          $str=str_replace("</c09", "</c", $str);
+                          $str=str_replace("<c10", "<c", $str);
+                          $str=str_replace("</c10", "</c", $str); */
+                    file_put_contents('./validatedFiles/'.$agencyCode.'/'. $eadid .'.xml', $str);
 
                     //This will set a serial for each node for the componets fields
-                    $xml2 = simplexml_load_file('./validatedFiles/'.$agencyCode.'/'. $fname);
+                    $xml2 = simplexml_load_file('./validatedFiles/'.$agencyCode.'/'. $eadid .'.xml');
                     $dom2 = new DOMDocument;
                     $dom2->preserveWhiteSpace = false;
                     $dom2->formatOutput = true;
 
                     $dom2->loadXML($xml2->asXML());
                     foreach ($dom2->getElementsByTagName('c') as $ctag) {
-                              $uniqid= uniqid();
-                          $uniqid="c_".$uniqid;
-                            $ctag->setAttribute('id', $uniqid);
+                        $uniqid= uniqid();
+                        $uniqid="c_".$uniqid;
+                        $ctag->setAttribute('id', $uniqid);
                     }
-                    $dom2->save('./validatedFiles/'.$agencyCode.'/'. $fname);
 
-
-
+                    $dom2->save('./validatedFiles/'.$agencyCode.'/'. $eadid .'.xml');
                     //    $doc->saveXML('./validatedFiles/'.$agencyCode.'/'. $fname);
                 }
-
                 $data = array(
                      'req_id'   => $req_id,
                      'file_name'    => $filename,
                      'rules_valid'  => $rules_valid_to_string,
                      'rules_failed' => $rules_failed_to_string
                 );
-
                 $this->load->model('eadharvester_model');
                 $_result = $this->eadharvester_model->insert_val_log($data, 'request_val_log');
                 if ($_result == 0) {
