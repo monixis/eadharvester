@@ -168,8 +168,8 @@ class eadharvester extends CI_Controller
                     }
                     //remove white space in value of eadid
                     $eadid=$xml->eadheader->eadid;
-                    if (strlen($eadid)<1){
-                      $eadid=$filename;
+                    if (strlen($eadid)<1) {
+                        $eadid=$filename;
                     }
                     $eadid=trim($eadid);
                     //remove xml extenion if one is attached to the $eadid
@@ -177,6 +177,17 @@ class eadharvester extends CI_Controller
                     //if they use a period in the id change it to underscore
                     $eadid = preg_replace("/[\.]/", "_", $eadid);
                     $xml->eadheader->eadid = $eadid;
+
+                    //if the unitedate is nested in title move it up one level so it can be index by solr
+                    if (isset($xml->archdesc->did->unittitle->unitdate)) {
+                        $unitdate=$xml->archdesc->did->unittitle->unitdate;
+                        $unitdatetype = $xml->archdesc->did->unittitle->unitdate['type'];
+                        $unitdatenormal = $xml->archdesc->did->unittitle->unitdate['normal'];
+                        $newunitdate = $xml->archdesc->did->addChild('unitdate',$unitdate);
+                        $newunitdate->addAttribute('type',$unitdatetype);
+                        $newunitdate->addAttribute('normal',$unitdatenormal);
+                    }
+
 
                     // Download the validated EAD file on the server
                     $fname = basename($path_to_file);
