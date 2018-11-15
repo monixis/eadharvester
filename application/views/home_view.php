@@ -187,6 +187,18 @@ tr#red{
                                 <input type="text" class="form-control" name="addressline3" id="addressline3" placeholder="City, State, Zip">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label>Address Line 4</label>
+                            <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                                <input type="text" class="form-control" name="addressline4" id="addressline4" placeholder="COther">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Address Line 5</label>
+                            <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                                <input type="text" class="form-control" name="addressline5" id="addressline5" placeholder="Other">
+                            </div>
+                        </div>
 
                         <!--div class="form-group">
                             <label>Select Directory</label>
@@ -451,6 +463,8 @@ tr#red{
                         var addressline1 = $("#addressline1").val();
                         var addressline2 = $("#addressline2").val();
                         var addressline3 = $("#addressline3").val();
+                        var addressline4 = $("#addressline4").val();
+                        var addressline5 = $("#addressline5").val();
                         //var dirSel = $("#dirsel").val();
                         $("#resultTable tbody").empty();
                         var fileList = [];
@@ -480,6 +494,8 @@ tr#red{
                                 addressline1: addressline1,
                                 addressline2: addressline2,
                                 addressline3: addressline3,
+                                addressline4: addressline4,
+                                addressline5: addressline5,
                                 repoName: repoName,
                                 //directory: dirSel,
                                 fileList: JSON.stringify(fileList)

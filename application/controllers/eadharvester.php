@@ -23,7 +23,9 @@ class eadharvester extends CI_Controller
         $addressline1 = $_POST['addressline1'];
         $addressline2 = $_POST['addressline2'];
         $addressline3 = $_POST['addressline3'];
-        $addresslineArray=array($addressline1 , $addressline2 , $addressline3);
+        $addressline4 = $_POST['addressline4'];
+        $addressline5 = $_POST['addressline5'];
+        $addresslineArray=array($addressline1 , $addressline2 , $addressline3, $addressline4, $addressline5);
         //remove white from agencydoe
         $agencyCode= trim($agencyCode);
         $repoName = $_POST['repoName'];
@@ -58,7 +60,7 @@ class eadharvester extends CI_Controller
                 if (isset($xml->archdesc->did->origination)) {
                     $rules_valid[] = 2;
                 } else {
-                    $rules_failed[] = 2;
+                    //  $rules_failed[] = 2;
                 }
 
                 /* Collection Dates Validation*/
@@ -73,7 +75,7 @@ class eadharvester extends CI_Controller
                 if (isset($xml->archdesc->did->abstract)) {
                     $rules_valid[] = 4;
                 } else {
-                    $rules_failed[] = 4;
+                    //  $rules_failed[] = 4;
                 }
 
                 /* Repository Validation */
@@ -87,48 +89,48 @@ class eadharvester extends CI_Controller
                 if (isset($xml->archdesc->did->langmaterial->language) || isset($xml->archdesc->did->langmaterial)) {
                     $rules_valid[] = 6;
                 } else {
-                    $rules_failed[] = 6;
+                    //    $rules_failed[] = 6;
                 }
 
                 /* Physical Description Validation */
                 if (isset($xml->archdesc->did->physdesc->extent)) {
                     $rules_valid[] = 7;
                 } else {
-                    $rules_failed[] = 7;
+                    //  $rules_failed[] = 7;
                 }
 
                 /* Access Restrictions Validation */
                 if (isset($xml->archdesc->accessrestrict) || isset($xml->archdesc->descgrp->accessrestrict)) {
                     $rules_valid[] = 8;
                 } else {
-                    $rules_failed[] = 8;
+                    //  $rules_failed[] = 8;
                 }
                 /* Biography or Historical Note Validation */
                 if (isset($xml->archdesc->bioghist)) {
                     $rules_valid[] = 9;
                 } else {
-                    $rules_failed[] = 9;
+                    //$rules_failed[] = 9;
                 }
 
                 /* Controlled Access Headings Validation */
                 if (isset($xml->archdesc->controlaccess)) {
                     $rules_valid[] = 10;
                 } else {
-                    $rules_failed[] = 10;
+                    //  $rules_failed[] = 10;
                 }
                 /* Scope and Content Note Validation */
 
                 if (isset($xml->archdesc->scopecontent)) {
                     $rules_valid[] = 11;
                 } else {
-                    $rules_failed[] = 11;
+                    //$rules_failed[] = 11;
                 }
                 /* Use Restrictions Validation */
 
                 if (isset($xml->archdesc->userestrict->p) || isset($xml->archdesc->descgrp->userestrict)) {
                     $rules_valid[] = 12;
                 } else {
-                    $rules_failed[] = 12;
+                    //      $rules_failed[] = 12;
                 }
 
                 /* Agency code Validation */
@@ -176,6 +178,9 @@ class eadharvester extends CI_Controller
                     $eadid = rtrim($eadid, '.xml');
                     //if they use a period in the id change it to underscore
                     $eadid = preg_replace("/[\.]/", "_", $eadid);
+                    //remove brackets if they are part of id
+                    $eadid = preg_replace("/>/", "", $eadid);
+                    $eadid = preg_replace("/</", "", $eadid);
                     $xml->eadheader->eadid = $eadid;
 
                     //if the unitedate is nested in title move it up one level so it can be index by solr
@@ -227,7 +232,12 @@ class eadharvester extends CI_Controller
                         $address->appendChild($b);
                         $b = $dom->createElement('addressline', $addressline3);
                         $address->appendChild($b);
+                        $b = $dom->createElement('addressline', $addressline4);
+                        $address->appendChild($b);
+                        $b = $dom->createElement('addressline', $addressline5);
+                        $address->appendChild($b);
                     }
+
                     //see if directory exists and create when missing
                     if (!is_dir('validatedFiles/'.$agencyCode)) {
                         mkdir('validatedFiles/'.$agencyCode, 0700);
@@ -344,6 +354,7 @@ class eadharvester extends CI_Controller
        }*/
 
 
+
     public function insert_inst_info($gitUserId, $repository, $branch, $num_files)
     {
         date_default_timezone_set('US/Eastern');
@@ -356,7 +367,6 @@ class eadharvester extends CI_Controller
         //'branch_dir'    => $directory,
         'num_files'       => $num_files,
     );
-
         $this->load->model('eadharvester_model');
         $_result = $this->eadharvester_model->insert_institute($data, 'institute_request_info');
 
@@ -434,4 +444,5 @@ class eadharvester extends CI_Controller
             echo "failed";
         }
     }
+
 }
